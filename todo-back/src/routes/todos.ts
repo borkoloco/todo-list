@@ -1,113 +1,87 @@
-import { Router } from "express";
-import { Todo } from "../models/todo";
-import { z } from "zod";
+import { Router, Request, Response, NextFunction } from "express";
+import Todo from "../models/todo";
 
 const router = Router();
 
-const todoSchema = z.object({
-  title: z.string(),
-  status: z.boolean().optional(),
-});
-
-// Get all todos
-router.get("/", async (req, res) => {
-  try {
-    const todos = await Todo.find();
-    res.json(todos);
-  } catch (err) {
-    res.status(500).json({ error: "Something went wrong" });
+router.get(
+  "/",
+  async (_: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const todos = await Todo.find();
+      res.status(200).json(todos);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
-// Create a new todo
-router.post("/", async (req, res) => {
-  try {
-    const validatedData = todoSchema.parse(req.body);
-    const newTodo = new Todo(validatedData);
-    await newTodo.save();
-    res.status(201).json(newTodo);
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Invalid input";
-    res.status(400).json({ error: errorMessage });
+router.get(
+  "/:id",
+  async (req, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const todo = await Todo.findById(req.params.id);
+      if (!todo) {
+        res.status(404).json({ message: "Todo not found" });
+        return;
+      }
+      res.status(200).json(todo);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
-// Update a todo
-router.put("/:id", async (req, res) => {
-  try {
-    const validatedData = todoSchema.partial().parse(req.body);
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      req.params.id,
-      validatedData,
-      { new: true }
-    );
-    res.json(updatedTodo);
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Invalid input";
-    res.status(400).json({ error: errorMessage });
-  }
-});
+router.post(
+  "/",
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { title, status } = req.body;
 
-// Delete a todo
-router.delete("/:id", async (req, res) => {
-  try {
-    await Todo.findByIdAndDelete(req.params.id);
-    res.status(204).send();
-  } catch (err) {
-    res.status(500).json({ error: "Something went wrong" });
+    try {
+      const newTodo = new Todo({
+        title,
+        status: status || false,
+      });
+
+      await newTodo.save();
+      res.status(201).json(newTodo);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+router.put(
+  "/:id",
+  async (req, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      if (!todo) {
+        res.status(404).json({ message: "Todo not found" });
+        return;
+      }
+      res.status(200).json(todo);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  async (req, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const todo = await Todo.findByIdAndDelete(req.params.id);
+      if (!todo) {
+        res.status(404).json({ message: "Todo not found" });
+        return;
+      }
+      res.status(200).json({ message: "Todo deleted" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;
-
-// import { Router } from "express";
-// import { Todo } from "../models/todo";
-// import { z } from "zod";
-
-// const router = Router();
-
-// const todoSchema = z.object({
-//   title: z.string(),
-//   status: z.boolean().optional(),
-// });
-
-// // Get all todos
-// router.get("/", async (req, res) => {
-//   const todos = await Todo.find();
-//   res.json(todos);
-// });
-
-// // Create a new todo
-// router.post("/", async (req, res) => {
-//   try {
-//     const validatedData = todoSchema.parse(req.body);
-//     const newTodo = new Todo(validatedData);
-//     await newTodo.save();
-//     res.status(201).json(newTodo);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
-
-// // Update a todo
-// router.put("/:id", async (req, res) => {
-//   try {
-//     const validatedData = todoSchema.partial().parse(req.body);
-//     const updatedTodo = await Todo.findByIdAndUpdate(
-//       req.params.id,
-//       validatedData,
-//       { new: true }
-//     );
-//     res.json(updatedTodo);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
-
-// // Delete a todo
-// router.delete("/:id", async (req, res) => {
-//   await Todo.findByIdAndDelete(req.params.id);
-//   res.status(204).send();
-// });
-
-// export default router;

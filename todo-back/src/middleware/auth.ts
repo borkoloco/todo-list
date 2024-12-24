@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // Implement authentication logic here
+const authMiddleware = (_: Request, __: Response, next: NextFunction) => {
   next();
 };
 
