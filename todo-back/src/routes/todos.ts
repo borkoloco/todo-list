@@ -1,7 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
+import authMiddleware from "../middleware/authMiddleware";
 import Todo from "../models/todo";
 
 const router = Router();
+
+router.use(authMiddleware);
 
 router.get(
   "/",
@@ -31,6 +34,43 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * tags:
+ *   name: Todos
+ *   description: Todo operations
+ */
+
+/**
+ * @swagger
+ * /api/todos:
+ *   post:
+ *     summary: Create a new Todo
+ *     description: Create a new Todo item.
+ *     tags: [Todos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Title of the todo
+ *                 example: "Buy groceries"
+ *             required:
+ *               - title
+ *     responses:
+ *       201:
+ *         description: Todo created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Todo'
+ *       400:
+ *         description: Invalid input
+ */
 router.post(
   "/",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
