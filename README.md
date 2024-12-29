@@ -1,4 +1,3 @@
-
 # To-Do List Application
 
 This project is a To-Do List web application built with the **MERN** stack (MongoDB, Express, React, Node.js). The application allows users to manage their tasks, including adding, updating, and deleting tasks. It also integrates with **Auth0** for authentication and **Redux** for state management.
@@ -23,17 +22,20 @@ This project is a To-Do List web application built with the **MERN** stack (Mong
 ### Backend (Node.js & Express)
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/todo-app.git
-   cd todo-app/backend
+   git clone https://github.com/yourusername/todo-list.git
+   cd todo-list/todo-back
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file in the `backend` folder and add the following:
+
    ```env
    MONGO_URI=your_mongodb_connection_string
    PORT=5001
@@ -50,16 +52,19 @@ This project is a To-Do List web application built with the **MERN** stack (Mong
 ### Frontend (React & Next.js)
 
 1. Navigate to the `frontend` directory:
+
    ```bash
-   cd todo-app/frontend
+   cd todo-list/todo-front
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env.local` file in the `frontend` folder and add the following:
+
    ```env
    NEXT_PUBLIC_AUTH0_CLIENT_ID=your_auth0_client_id
    NEXT_PUBLIC_AUTH0_DOMAIN=your_auth0_domain
@@ -82,6 +87,7 @@ The frontend will be running on `http://localhost:3000` and the backend on `http
 ## Technologies Used
 
 - **Backend**:
+
   - Node.js
   - Express
   - MongoDB (via Mongoose)
@@ -99,6 +105,7 @@ The frontend will be running on `http://localhost:3000` and the backend on `http
 ## Testing
 
 1. **Backend Testing**: To run tests for the backend, navigate to the `backend` folder and run:
+
    ```bash
    npm test
    ```
