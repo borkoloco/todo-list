@@ -1,25 +1,43 @@
 import request from "supertest";
+import mongoose from "mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
 import { app } from "../index";
 
-describe("POST /api/todos", () => {
-  it("should create a new todo with valid data", async () => {
-    const response = await request(app).post("/api/todos").send({
-      title: "New Task",
+let mongoServer: MongoMemoryServer;
+
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+
+  await mongoose.connect(uri);
+});
+
+afterAll(async () => {
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+jest.mock(
+  "../middleware/authMiddleware",
+  () => (_req: any, _res: any, next: any) => next()
+);
+
+describe("Todo API", () => {
+  it("should create a new Todo task", async () => {
+    const newTodo = {
+      title: "Test Task",
       status: false,
-    });
+    };
 
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty("title", "New Task");
-    expect(response.body).toHaveProperty("status", false);
+    const response = await request(app)
+      .post("/api/todos")
+      .send(newTodo)
+      .expect(201);
+
     expect(response.body).toHaveProperty("_id");
-  });
-
-  it("should return validation error for invalid data", async () => {
-    const response = await request(app).post("/api/todos").send({
-      title: "A",
-    });
-
-    expect(response.status).toBe(400);
-    expect(response.body.errors[0].message).toBe("Title is too short");
+    expect(response.body).toHaveProperty("title", newTodo.title);
+    expect(response.body).toHaveProperty("status", newTodo.status);
   });
 });

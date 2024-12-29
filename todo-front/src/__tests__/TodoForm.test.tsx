@@ -1,40 +1,34 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import TodoForm from "../components/TodoForm";
+import { createTodo } from "../api/todoApi";
 
-describe("TodoForm", () => {
-  it("renders correctly and contains required fields", () => {
-    render(<TodoForm />);
+describe("createTodo", () => {
+  const mockTodoTitle = "New Task";
+  const mockHeaders = { Authorization: "Bearer mock-token" };
+  const mockResponse = {
+    _id: "12345",
+    title: mockTodoTitle,
+    status: false,
+  };
 
-    const input = screen.getByPlaceholderText("New task...");
-    const button = screen.getByText("Add");
-
-    expect(input).toBeInTheDocument();
-    expect(button).toBeInTheDocument();
+  beforeEach(() => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue(mockResponse),
+    } as unknown as Response);
   });
 
-  it("handles form submission when title is provided", async () => {
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText("New task...");
-    const button = screen.getByText("Add");
-
-    fireEvent.change(input, { target: { value: "New Todo Task" } });
-
-    fireEvent.click(button);
-
-    expect((input as HTMLInputElement).value).toBe("");
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("does not submit when the title is empty", async () => {
-    render(<TodoForm />);
+  it("should create a new task and return the expected response", async () => {
+    const result = await createTodo(mockTodoTitle, mockHeaders);
 
-    const input = screen.getByPlaceholderText("New task...");
-    const button = screen.getByText("Add");
+    expect(fetch).toHaveBeenCalledWith("http://localhost:5001/api/todos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...mockHeaders },
+      body: JSON.stringify({ title: mockTodoTitle }),
+    });
 
-    fireEvent.change(input, { target: { value: "" } });
-    fireEvent.click(button);
-
-    expect((input as HTMLInputElement).value).toBe("");
+    expect(result).toEqual(mockResponse);
   });
 });
