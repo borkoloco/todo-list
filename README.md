@@ -1,162 +1,121 @@
-To-Do Application
-This is a full-stack To-Do application built using Next.js, React, Redux, Auth0 for authentication, and MongoDB for data storage. The app allows users to create, update, delete, and view their tasks. It also implements API validation using Zod and provides interactive API documentation using Swagger.
 
-Features
-User Authentication: Auth0 integration for secure user login/logout.
-CRUD Operations: Users can create, update, and delete to-do tasks.
-Zod Validation: Validation of API request data using Zod to ensure data integrity.
-Swagger API Documentation: Automatically generated API documentation using Swagger for easy exploration of available endpoints.
-Tech Stack
-Frontend: React, Next.js, Redux, Styled-components
-Backend: Node.js, Express, MongoDB
-Authentication: Auth0
-API Validation: Zod
-API Documentation: Swagger
-Setup Instructions
+# To-Do List Application
 
-1. Clone the repository
-   bash
-   Copiar código
+This project is a To-Do List web application built with the **MERN** stack (MongoDB, Express, React, Node.js). The application allows users to manage their tasks, including adding, updating, and deleting tasks. It also integrates with **Auth0** for authentication and **Redux** for state management.
+
+## Features
+
+- **Authentication**: Secure login and session management via Auth0.
+- **Task Management**: Add, update, and delete tasks with real-time updates.
+- **State Management**: Uses Redux to manage the state of tasks in the application.
+- **API Integration**: Connects to a backend API using Fetch for managing tasks.
+- **Validation**: Uses Zod for backend validation of task data.
+- **Swagger Documentation**: Automatically generates API documentation with Swagger for easy reference.
+
+## Prerequisites
+
+- **Node.js**: Make sure you have Node.js installed. You can download it from [here](https://nodejs.org/).
+- **MongoDB Atlas**: Set up a MongoDB cluster for the backend database. You can follow the instructions [here](https://www.mongodb.com/cloud/atlas).
+- **Auth0 Account**: Create an Auth0 account for authentication. Sign up [here](https://auth0.com/).
+
+## Installation
+
+### Backend (Node.js & Express)
+
+1. Clone the repository:
+   ```bash
    git clone https://github.com/yourusername/todo-app.git
-   cd todo-app
-2. Install dependencies
-   bash
-   Copiar código
+   cd todo-app/backend
+   ```
+
+2. Install dependencies:
+   ```bash
    npm install
-3. Configure environment variables
-   Create a .env file in the root of the project and add the following variables:
+   ```
 
-bash
-Copiar código
-NEXT_PUBLIC_AUTH0_CLIENT_ID=your-client-id
-NEXT_PUBLIC_AUTH0_DOMAIN=your-domain
-NEXT_PUBLIC_AUTH0_SECRET=your-secret
-NEXT_PUBLIC_AUTH0_AUDIENCE=your-audience
-MONGO_URI=your-mongo-uri
-PORT=5001 4. Run the app
-bash
-Copiar código
-npm run dev
-This will start the Next.js development server at http://localhost:3000.
+3. Create a `.env` file in the `backend` folder and add the following:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   PORT=5001
+   AUTH0_DOMAIN=your_auth0_domain
+   AUTH0_CLIENT_ID=your_auth0_client_id
+   AUTH0_CLIENT_SECRET=your_auth0_client_secret
+   ```
 
-API Endpoints
-The app includes the following API endpoints for managing to-do tasks:
+4. Start the backend server:
+   ```bash
+   npm run dev
+   ```
 
-GET /api/todos
-Fetch all to-do tasks.
+### Frontend (React & Next.js)
 
-Example Request
-bash
-Copiar código
-GET http://localhost:5001/api/todos
-Example Response
-json
-Copiar código
-[
-{
-"_id": "12345",
-"title": "New Task",
-"status": false
-}
-]
-POST /api/todos
-Create a new to-do task. The request body must contain a title.
+1. Navigate to the `frontend` directory:
+   ```bash
+   cd todo-app/frontend
+   ```
 
-Example Request
-bash
-Copiar código
-POST http://localhost:5001/api/todos
-Content-Type: application/json
-Authorization: Bearer <token>
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-{
-"title": "New Task"
-}
-Example Response
-json
-Copiar código
-{
-"\_id": "12345",
-"title": "New Task",
-"status": false
-}
-Zod Validation
-The request body is validated using Zod on the server-side to ensure that only valid data is accepted. If validation fails, a 400 status code is returned with an error message detailing which fields are invalid.
+3. Create a `.env.local` file in the `frontend` folder and add the following:
+   ```env
+   NEXT_PUBLIC_AUTH0_CLIENT_ID=your_auth0_client_id
+   NEXT_PUBLIC_AUTH0_DOMAIN=your_auth0_domain
+   NEXT_PUBLIC_AUTH0_AUDIENCE=your_auth0_audience
+   ```
 
-typescript
-Copiar código
-const todoSchema = z.object({
-title: z.string().min(1, "Title is required"),
-});
+4. Start the frontend server:
+   ```bash
+   npm run dev
+   ```
 
-const validateTodo = (data: any) => {
-try {
-todoSchema.parse(data); // Throws error if invalid
-} catch (error) {
-throw new Error("Validation failed");
-}
-};
-PUT /api/todos/:id
-Update an existing to-do task by its id.
+The frontend will be running on `http://localhost:3000` and the backend on `http://localhost:5001`.
 
-Example Request
-bash
-Copiar código
-PUT http://localhost:5001/api/todos/12345
-Content-Type: application/json
-Authorization: Bearer <token>
+## Usage
 
-{
-"title": "Updated Task"
-}
-Example Response
-json
-Copiar código
-{
-"\_id": "12345",
-"title": "Updated Task",
-"status": false
-}
-DELETE /api/todos/:id
-Delete a to-do task by its id.
+1. **Login**: Use the "Login" button on the Navbar to authenticate via Auth0.
+2. **Manage Tasks**: Once logged in, you can add, update, and delete tasks.
+3. **Swagger Docs**: The backend Swagger API documentation can be accessed at `http://localhost:5001/api-docs`.
 
-Example Request
-bash
-Copiar código
-DELETE http://localhost:5001/api/todos/12345
-Authorization: Bearer <token>
-Example Response
-json
-Copiar código
-{
-"message": "Todo deleted successfully"
-}
-API Documentation (Swagger)
-You can access the interactive API documentation for this project by visiting:
+## Technologies Used
 
-http://localhost:5001/api-docs
+- **Backend**:
+  - Node.js
+  - Express
+  - MongoDB (via Mongoose)
+  - Swagger for API documentation
+  - Zod for backend validation
+  - Auth0 for authentication
 
-Swagger will list all available API endpoints, their request methods, and response formats. It also allows you to make test requests directly from the documentation.
+- **Frontend**:
+  - React
+  - Next.js
+  - Redux Toolkit for state management
+  - Styled-components for styling
+  - Jest for unit testing
 
-Testing
-Frontend
-The frontend is tested using Jest and React Testing Library. To run the tests:
+## Testing
 
-bash
-Copiar código
-npm test
-Backend
-The backend is also tested using Jest and mocks are used for database interactions to isolate functionality. You can run tests for the backend as follows:
+1. **Backend Testing**: To run tests for the backend, navigate to the `backend` folder and run:
+   ```bash
+   npm test
+   ```
 
-bash
-Copiar código
-npm run test-backend
-Contributing
-Fork the repository.
-Create a new branch (git checkout -b feature-branch).
-Make your changes.
-Commit your changes (git commit -am 'Add new feature').
-Push to the branch (git push origin feature-branch).
-Open a pull request.
-License
+2. **Frontend Testing**: To run tests for the frontend, navigate to the `frontend` folder and run:
+   ```bash
+   npm test
+   ```
+
+## Contributing
+
+Feel free to open issues or pull requests to contribute to this project. Any contributions are welcome!
+
+## License
+
 This project is licensed under the MIT License.
+
+---
+
+**Note**: Replace placeholders like `your_mongodb_connection_string`, `your_auth0_client_id`, etc., with your actual values.
