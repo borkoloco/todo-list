@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <ProtectedRoute>
       <div>
-        <h1>To-Do List</h1>
+        <h1>What will be your next todo?</h1>
         <TodoForm />
         <TodoList />
       </div>
